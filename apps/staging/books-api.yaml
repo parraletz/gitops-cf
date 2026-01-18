@@ -13,6 +13,13 @@ spec:
       helm:
         releaseName: books-api
         valuesObject:
+          replicaCount: 1
+          scaleObject:
+            enabled: true
+            minReplicaCount: 1
+            maxReplicaCount: 10
+            targetCPUUtilizationPercentage: 50
+            targetMemoryUtilizationPercentage: 50
           image:
             tag: '4.1.0'
             repository: ghcr.io/parraletz/books-api
