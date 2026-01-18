@@ -7,14 +7,14 @@ spec:
   project: default
   sources:
     - repoURL: oci://ghcr.io/parraletz/charts/books-api
-      targetRevision: '4.0.0'
+      targetRevision: '4.1.0'
       chart: books-api
       path: .
       helm:
         releaseName: books-api
         valuesObject:
           image:
-            tag: '4.0.0'
+            tag: '4.1.0'
             repository: ghcr.io/parraletz/books-api
             # valuesFiles:
             #   - $values/books/api/values-staging.yaml
