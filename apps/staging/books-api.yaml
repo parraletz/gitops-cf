@@ -7,7 +7,7 @@ spec:
   project: default
   sources:
     - repoURL: oci://ghcr.io/parraletz/charts/books-api
-      targetRevision: '4.1.0'
+      targetRevision: '4.1.1'
       chart: books-api
       path: .
       helm:
@@ -21,7 +21,7 @@ spec:
             targetCPUUtilizationPercentage: 50
             targetMemoryUtilizationPercentage: 50
           image:
-            tag: '4.1.0'
+            tag: '4.1.1'
             repository: ghcr.io/parraletz/books-api
             # valuesFiles:
             #   - $values/books/api/values-staging.yaml
