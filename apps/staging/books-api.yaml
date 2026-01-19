@@ -14,6 +14,8 @@ spec:
         releaseName: books-api
         valuesObject:
           ingressGateway:
+            annotations:
+              external-dns.alpha.kubernetes.io/hostname: books-api.staging.cloudnative.lat
             enabled: true
             hosts:
               - host: books-api.staging.cloudnative.lat
