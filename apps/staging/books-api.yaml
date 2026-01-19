@@ -7,10 +7,14 @@ spec:
   project: default
   sources:
     - repoURL: oci://ghcr.io/parraletz/charts/books-api
-      targetRevision: '5.1.0'
+      targetRevision: "5.1.0"
       chart: books-api
       path: .
       helm:
+        ingressGateway:
+          enabled: true
+          hosts:
+            - host: books-api.staging.cloudnative.lat
         releaseName: books-api
         valuesObject:
           replicaCount: 1
@@ -21,7 +25,7 @@ spec:
             targetCPUUtilizationPercentage: 50
             targetMemoryUtilizationPercentage: 50
           image:
-            tag: '5.1.0'
+            tag: "5.1.0"
             repository: ghcr.io/parraletz/books-api
             # valuesFiles:
             #   - $values/books/api/values-staging.yaml
