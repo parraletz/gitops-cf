@@ -17,7 +17,6 @@ spec:
             enabled: true
             hosts:
               - host: books-api.staging.cloudnative.lat
-          replicaCount: 1
           scaleObject:
             enabled: true
             minReplicaCount: 1
