@@ -11,12 +11,12 @@ spec:
       chart: books-api
       path: .
       helm:
-        ingressGateway:
-          enabled: true
-          hosts:
-            - host: books-api.staging.cloudnative.lat
         releaseName: books-api
         valuesObject:
+          ingressGateway:
+            enabled: true
+            hosts:
+              - host: books-api.staging.cloudnative.lat
           replicaCount: 1
           scaleObject:
             enabled: true
