@@ -26,8 +26,8 @@ spec:
             enabled: true
             minReplicaCount: 1
             maxReplicaCount: 10
-            targetCPUUtilizationPercentage: 50
-            targetMemoryUtilizationPercentage: 50
+            targetCPUUtilizationPercentage: 70
+            targetMemoryUtilizationPercentage: 80
           # KEDA HTTP Add-on - HTTP traffic based autoscaling
           httpScaledObject:
             enabled: false
