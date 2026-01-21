@@ -13,7 +13,7 @@ spec:
       helm:
         releaseName: books-api
         valuesObject:
-          replicas: 1
+          replicaCount: 0
           ingressGateway:
             annotations:
               external-dns.alpha.kubernetes.io/hostname: books-api.staging.cloudnative.lat
