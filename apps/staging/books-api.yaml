@@ -7,7 +7,7 @@ spec:
   project: default
   sources:
     - repoURL: oci://ghcr.io/parraletz/charts/books-api
-      targetRevision: "6.0.0"
+      targetRevision: "6.0.1"
       chart: books-api
       path: .
       helm:
@@ -15,14 +15,12 @@ spec:
         valuesObject:
           # replicaCount solo se usa si httpScaledObject/scaleObject están deshabilitados
           replicaCount: 1
-          
           ingressGateway:
             annotations:
               external-dns.alpha.kubernetes.io/hostname: books-api.staging.cloudnative.lat
             enabled: true
             hosts:
               - host: books-api.staging.cloudnative.lat
-          
           # Traditional CPU/Memory based scaling - DISABLED
           scaleObject:
             enabled: false
@@ -30,43 +28,35 @@ spec:
             maxReplicaCount: 10
             targetCPUUtilizationPercentage: 50
             targetMemoryUtilizationPercentage: 50
-          
           # KEDA HTTP Add-on - HTTP traffic based autoscaling
           httpScaledObject:
             enabled: true
-            
             # Target service configuration
             scaleTargetRef:
-              name: ""       # Uses chart fullname by default
-              service: ""    # Uses chart fullname by default
-              port: 80       # Must match service.port
-            
+              name: "" # Uses chart fullname by default
+              service: "" # Uses chart fullname by default
+              port: 80 # Must match service.port
             # Replica configuration
             replicas:
-              min: 0         # Scale-to-zero when no traffic (saves resources)
-              max: 10        # Maximum replicas under load
-            
+              min: 0 # Scale-to-zero when no traffic (saves resources)
+              max: 10 # Maximum replicas under load
             # Scaling metric configuration
             scalingMetric:
-              type: "requestRate"     # Options: "requestRate" or "concurrency"
-              value: "100"            # Target: 100 requests/second per replica
-            
+              type: "requestRate" # Options: "requestRate" or "concurrency"
+              value: "100" # Target: 100 requests/second per replica
             # Pending requests threshold before scaling up
             targetPendingRequests: 100
-            
             # Cooldown period before scaling down (seconds)
-            cooldownPeriod: 300  # Wait 5 minutes without traffic
-            
+            cooldownPeriod: 300 # Wait 5 minutes without traffic
             # KEDA HTTP Add-on interceptor configuration
             interceptor:
               namespace: "keda"
               service: "keda-add-ons-http-interceptor-proxy"
               port: 8080
-              targetHost: ""                # Empty uses internal FQDN
-              preserveHostHeader: true      # Preserve external domain in Host header
-          
+              targetHost: "" # Empty uses internal FQDN
+              preserveHostHeader: true # Preserve external domain in Host header
           image:
-            tag: "6.0.0"
+            tag: "6.0.1"
             repository: ghcr.io/parraletz/books-api
             # valuesFiles:
             #   - $values/books/api/values-staging.yaml
