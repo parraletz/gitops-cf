@@ -42,8 +42,10 @@ spec:
               max: 10 # Maximum replicas under load
             # Scaling metric configuration
             scalingMetric:
-              type: "requestRate" # Options: "requestRate" or "concurrency"
-              value: "100" # Target: 100 requests/second per replica
+              requestRate:
+                targetValue: 100
+                window: "1m"
+                granularity: "1s"
             # Pending requests threshold before scaling up
             targetPendingRequests: 100
             # Cooldown period before scaling down (seconds)
