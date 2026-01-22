@@ -18,7 +18,7 @@ spec:
           ingressGateway:
             annotations:
               external-dns.alpha.kubernetes.io/hostname: books-api.staging.cloudnative.lat
-            enabled: true
+            enabled: false
             hosts:
               - host: books-api.staging.cloudnative.lat
           # Traditional CPU/Memory based scaling - DISABLED
