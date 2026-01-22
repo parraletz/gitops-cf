@@ -23,14 +23,14 @@ spec:
               - host: books-api.staging.cloudnative.lat
           # Traditional CPU/Memory based scaling - DISABLED
           scaleObject:
-            enabled: false
+            enabled: true
             minReplicaCount: 1
             maxReplicaCount: 10
             targetCPUUtilizationPercentage: 70
             targetMemoryUtilizationPercentage: 80
           # KEDA HTTP Add-on - HTTP traffic based autoscaling
           httpScaledObject:
-            enabled: true
+            enabled: false
             # Hosts that this HTTPScaledObject will handle
             hosts:
               - books-api.staging.cloudnative.lat
