@@ -16,16 +16,15 @@ spec:
           # Enviar logs y metrics via alloy (OTEL)
           podAnnotations:
             alloy.grafana.com/scrape: "true"
-            # Istio sidecar injection and metrics
+            # Istio sidecar injection
             sidecar.istio.io/inject: "true"
-            proxy.istio.io/config: |
-              proxyStatsMatcher:
-                inclusionRegexps:
-                  - ".*"
+            # Prometheus scraping from Istio proxy
+            prometheus.istio.io/merge-metrics: "true"
           # Istio pod labels for service mesh
           podLabels:
             app: books-api
             version: v1
+            sidecar.istio.io/inject: "true"
           # replicaCount solo se usa si httpScaledObject/scaleObject están deshabilitados
           replicaCount: 1
           ingressGateway:
@@ -161,3 +160,6 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
