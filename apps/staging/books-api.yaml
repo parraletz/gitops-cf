@@ -7,7 +7,7 @@ spec:
   project: default
   sources:
     - repoURL: oci://ghcr.io/parraletz/charts/books-api
-      targetRevision: "7.0.0"
+      targetRevision: "7.1.0"
       chart: books-api
       path: .
       helm:
@@ -61,7 +61,7 @@ spec:
               targetHost: "" # Empty uses internal FQDN
               preserveHostHeader: true # Preserve external domain in Host header
           image:
-            tag: "7.0.0"
+            tag: "7.1.0"
             repository: ghcr.io/parraletz/books-api
           # Prometheus metrics and monitoring
           prometheus:
@@ -80,8 +80,8 @@ spec:
               enabled: true
               labels:
                 grafana_dashboard: "1"
-            # valuesFiles:
-            #   - $values/books/api/values-staging.yaml
+                # valuesFiles:
+                #   - $values/books/api/values-staging.yaml
     - repoURL: git@github.com:parraletz/gitops-cf.git
       targetRevision: main
       ref: values
