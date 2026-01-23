@@ -13,6 +13,9 @@ spec:
       helm:
         releaseName: books-api
         valuesObject:
+          # Enviar logs y metrics via alloy (OTEL)
+          podAnnotations:
+            alloy.grafana.com/scrape: "true"
           # replicaCount solo se usa si httpScaledObject/scaleObject están deshabilitados
           replicaCount: 1
           ingressGateway:
