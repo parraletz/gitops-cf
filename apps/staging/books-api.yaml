@@ -16,6 +16,16 @@ spec:
           # Enviar logs y metrics via alloy (OTEL)
           podAnnotations:
             alloy.grafana.com/scrape: "true"
+            # Istio sidecar injection and metrics
+            sidecar.istio.io/inject: "true"
+            proxy.istio.io/config: |
+              proxyStatsMatcher:
+                inclusionRegexps:
+                  - ".*"
+          # Istio pod labels for service mesh
+          podLabels:
+            app: books-api
+            version: v1
           # replicaCount solo se usa si httpScaledObject/scaleObject están deshabilitados
           replicaCount: 1
           ingressGateway:
@@ -24,13 +34,27 @@ spec:
             enabled: true
             hosts:
               - host: books-api.staging.cloudnative.lat
-          # Traditional CPU/Memory based scaling - DISABLED
+          # KEDA ScaledObject - CPU/Memory based scaling
           scaleObject:
             enabled: true
             minReplicaCount: 1
             maxReplicaCount: 10
+            cooldownPeriod: 300
+            pollingInterval: 30
             targetCPUUtilizationPercentage: 70
             targetMemoryUtilizationPercentage: 80
+            # Prevent aggressive scale down (flapping)
+            scaleDown:
+              stabilizationWindowSeconds: 300  # Wait 5 min before scaling down
+              percentPolicy: 10   # Max 10% pods removed per period
+              podsPolicy: 1       # Max 1 pod removed per period
+              periodSeconds: 60
+            # Allow quick scale up
+            scaleUp:
+              stabilizationWindowSeconds: 0
+              percentPolicy: 100
+              podsPolicy: 4
+              periodSeconds: 15
           # KEDA HTTP Add-on - HTTP traffic based autoscaling
           httpScaledObject:
             enabled: false
