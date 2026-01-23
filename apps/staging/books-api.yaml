@@ -63,6 +63,23 @@ spec:
           image:
             tag: "7.0.0"
             repository: ghcr.io/parraletz/books-api
+          # Prometheus metrics and monitoring
+          prometheus:
+            enabled: true
+            path: /metrics
+            port: "3000"
+            serviceMonitor:
+              enabled: true
+              labels:
+                release: kube-prometheus-stack
+              interval: "30s"
+              scrapeTimeout: "10s"
+          # Grafana dashboard auto-provisioning
+          grafana:
+            dashboards:
+              enabled: true
+              labels:
+                grafana_dashboard: "1"
             # valuesFiles:
             #   - $values/books/api/values-staging.yaml
     - repoURL: git@github.com:parraletz/gitops-cf.git
