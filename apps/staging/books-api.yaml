@@ -74,6 +74,45 @@ spec:
                 release: kube-prometheus-stack
               interval: "30s"
               scrapeTimeout: "10s"
+            # AlertManager alerts
+            alerts:
+              enabled: true
+              labels:
+                release: kube-prometheus-stack
+              rules:
+                highErrorRate:
+                  enabled: true
+                  threshold: 5
+                  for: "5m"
+                  severity: "critical"
+                highLatency:
+                  enabled: true
+                  threshold: 1
+                  for: "5m"
+                  severity: "warning"
+                podNotReady:
+                  enabled: true
+                  for: "5m"
+                  severity: "warning"
+                highCpuUsage:
+                  enabled: true
+                  threshold: 80
+                  for: "10m"
+                  severity: "warning"
+                highMemoryUsage:
+                  enabled: true
+                  threshold: 80
+                  for: "10m"
+                  severity: "warning"
+                podRestarting:
+                  enabled: true
+                  threshold: 3
+                  for: "5m"
+                  severity: "warning"
+                noPodsRunning:
+                  enabled: true
+                  for: "1m"
+                  severity: "critical"
           # Grafana dashboard auto-provisioning
           grafana:
             dashboards:
