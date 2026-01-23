@@ -7,7 +7,7 @@ spec:
   project: default
   sources:
     - repoURL: oci://ghcr.io/parraletz/charts/books-api
-      targetRevision: "7.3.0"
+      targetRevision: "7.4.0"
       chart: books-api
       path: .
       helm:
@@ -44,9 +44,9 @@ spec:
             targetMemoryUtilizationPercentage: 80
             # Prevent aggressive scale down (flapping)
             scaleDown:
-              stabilizationWindowSeconds: 300  # Wait 5 min before scaling down
-              percentPolicy: 10   # Max 10% pods removed per period
-              podsPolicy: 1       # Max 1 pod removed per period
+              stabilizationWindowSeconds: 300 # Wait 5 min before scaling down
+              percentPolicy: 10 # Max 10% pods removed per period
+              podsPolicy: 1 # Max 1 pod removed per period
               periodSeconds: 60
             # Allow quick scale up
             scaleUp:
@@ -87,7 +87,7 @@ spec:
               targetHost: "" # Empty uses internal FQDN
               preserveHostHeader: true # Preserve external domain in Host header
           image:
-            tag: "7.3.0"
+            tag: "7.4.0"
             repository: ghcr.io/parraletz/books-api
           # Prometheus metrics and monitoring
           prometheus:
