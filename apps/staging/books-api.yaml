@@ -30,12 +30,12 @@ spec:
           ingressGateway:
             annotations:
               external-dns.alpha.kubernetes.io/hostname: books-api.staging.cloudnative.lat
-            enabled: true
+            enabled: false
             hosts:
               - host: books-api.staging.cloudnative.lat
           # KEDA ScaledObject - CPU/Memory based scaling
           scaleObject:
-            enabled: true
+            enabled: false
             minReplicaCount: 1
             maxReplicaCount: 10
             cooldownPeriod: 300
@@ -91,18 +91,18 @@ spec:
             repository: ghcr.io/parraletz/books-api
           # Prometheus metrics and monitoring
           prometheus:
-            enabled: true
+            enabled: false
             path: /metrics
             port: "3000"
             serviceMonitor:
-              enabled: true
+              enabled: false
               labels:
                 release: kube-prometheus-stack
               interval: "30s"
               scrapeTimeout: "10s"
             # AlertManager alerts
             alerts:
-              enabled: true
+              enabled: false
               labels:
                 release: kube-prometheus-stack
               rules:
@@ -142,7 +142,7 @@ spec:
           # Grafana dashboard auto-provisioning
           grafana:
             dashboards:
-              enabled: true
+              enabled: false
               labels:
                 grafana_dashboard: "1"
                 # valuesFiles:
