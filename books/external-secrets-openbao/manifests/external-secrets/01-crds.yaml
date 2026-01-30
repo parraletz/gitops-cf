@@ -1,0 +1,40 @@
+# Nota: En un entorno real, instalarías los CRDs usando Helm:
+# helm repo add external-secrets https://charts.external-secrets.io
+# helm install external-secrets external-secrets/external-secrets -n external-secrets-system --create-namespace
+
+# Para esta demo, asumimos que los CRDs ya están instalados.
+# Si necesitas instalarlos manualmente, usa:
+# kubectl apply -f https://raw.githubusercontent.com/external-secrets/external-secrets/main/deploy/crds/bundle.yaml
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: external-secrets-installation-notes
+  namespace: external-secrets-system
+  labels:
+    app.kubernetes.io/name: external-secrets
+    app.kubernetes.io/component: installation-notes
+data:
+  README.md: |
+    # External Secrets Operator Installation
+    
+    Para instalar External Secrets Operator, ejecuta:
+    
+    ```bash
+    # Agregar el repositorio de Helm
+    helm repo add external-secrets https://charts.external-secrets.io
+    helm repo update
+    
+    # Instalar External Secrets Operator
+    helm install external-secrets external-secrets/external-secrets \
+      -n external-secrets-system \
+      --create-namespace \
+      --set installCRDs=true
+    ```
+    
+    O alternativamente, instala solo los CRDs:
+    
+    ```bash
+    kubectl apply -f https://raw.githubusercontent.com/external-secrets/external-secrets/main/deploy/crds/bundle.yaml
+    ```

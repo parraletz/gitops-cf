@@ -1,0 +1,69 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-app-config
+  namespace: secrets-demo
+  labels:
+    app.kubernetes.io/name: demo-app
+    app.kubernetes.io/component: config
+data:
+  app.yaml: |
+    server:
+      port: 8080
+      host: 0.0.0.0
+    
+    logging:
+      level: info
+      format: json
+    
+    features:
+      health_checks: true
+      metrics: true
+      secret_rotation: true
+  
+  entrypoint.sh: |
+    #!/bin/bash
+    set -e
+    
+    echo "=== Demo App Starting ==="
+    echo "Timestamp: $(date)"
+    echo "Hostname: $(hostname)"
+    echo "Namespace: ${POD_NAMESPACE:-unknown}"
+    echo
+    
+    echo "=== Environment Variables ==="
+    env | grep -E "^(APP_|DB_|API_)" | sort
+    echo
+    
+    echo "=== Mounted Secrets ==="
+    if [ -f "/secrets/database/database-url" ]; then
+      echo "✓ Database URL: $(cat /secrets/database/database-url | sed 's/:[^:]*@/:***@/')"
+    fi
+    
+    if [ -f "/secrets/database/database-username" ]; then
+      echo "✓ Database Username: $(cat /secrets/database/database-username)"
+    fi
+    
+    if [ -f "/secrets/config/connection_string" ]; then
+      echo "✓ Connection String: $(cat /secrets/config/connection_string | sed 's/:[^:]*@/:***@/')"
+    fi
+    
+    if [ -f "/secrets/tls/tls.crt" ]; then
+      echo "✓ TLS Certificate present ($(wc -c < /secrets/tls/tls.crt) bytes)"
+    fi
+    
+    echo
+    echo "=== Secret Refresh Loop ==="
+    while true; do
+      echo "[$(date)] Checking for secret updates..."
+      
+      # Simular verificación de rotación de secrets
+      if [ -f "/secrets/database/database-password" ]; then
+        PASSWORD_HASH=$(sha256sum /secrets/database/database-password | cut -d' ' -f1)
+        echo "[$(date)] Password hash: ${PASSWORD_HASH:0:16}..."
+      fi
+      
+      echo "[$(date)] Application healthy - secrets accessible"
+      sleep 30
+    done

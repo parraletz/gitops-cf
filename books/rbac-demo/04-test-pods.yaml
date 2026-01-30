@@ -1,0 +1,105 @@
+---
+# Pod con permisos (usa pod-reader-sa)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curl-with-permissions
+  namespace: default
+  labels:
+    app: rbac-demo
+    purpose: demonstration
+    permissions: allowed
+spec:
+  serviceAccountName: pod-reader-sa
+  containers:
+  - name: curl-container
+    image: curlimages/curl:8.5.0
+    command: ["sleep", "3600"]
+    env:
+    - name: KUBERNETES_SERVICE_HOST
+      value: "kubernetes.default.svc.cluster.local"
+    - name: KUBERNETES_SERVICE_PORT
+      value: "443"
+    volumeMounts:
+    - name: service-token
+      mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      readOnly: true
+  volumes:
+  - name: service-token
+    projected:
+      sources:
+      - serviceAccountToken:
+          path: token
+          expirationSeconds: 7200
+      - configMap:
+          name: kube-root-ca.crt
+          items:
+          - key: ca.crt
+            path: ca.crt
+      - downwardAPI:
+          items:
+          - path: namespace
+            fieldRef:
+              fieldPath: metadata.namespace
+
+---
+# Pod sin permisos (usa restricted-sa)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curl-without-permissions
+  namespace: default
+  labels:
+    app: rbac-demo
+    purpose: demonstration
+    permissions: denied
+spec:
+  serviceAccountName: restricted-sa
+  containers:
+  - name: curl-container
+    image: curlimages/curl:8.5.0
+    command: ["sleep", "3600"]
+    env:
+    - name: KUBERNETES_SERVICE_HOST
+      value: "kubernetes.default.svc.cluster.local"
+    - name: KUBERNETES_SERVICE_PORT
+      value: "443"
+    volumeMounts:
+    - name: service-token
+      mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      readOnly: true
+  volumes:
+  - name: service-token
+    projected:
+      sources:
+      - serviceAccountToken:
+          path: token
+          expirationSeconds: 7200
+      - configMap:
+          name: kube-root-ca.crt
+          items:
+          - key: ca.crt
+            path: ca.crt
+      - downwardAPI:
+          items:
+          - path: namespace
+            fieldRef:
+              fieldPath: metadata.namespace
+
+---
+# Pod httpbin para generar tráfico y tener algo que listar
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpbin-demo
+  namespace: default
+  labels:
+    app: httpbin
+    purpose: demonstration
+spec:
+  containers:
+  - name: httpbin
+    image: kennethreitz/httpbin:latest
+    ports:
+    - containerPort: 80
+      name: http

@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: secrets-demo
+  labels:
+    name: secrets-demo
+    app.kubernetes.io/name: secrets-demo
+    app.kubernetes.io/component: demo-environment
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openbao-system
+  labels:
+    name: openbao-system
+    app.kubernetes.io/name: openbao
+    app.kubernetes.io/component: secrets-management
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-secrets-system
+  labels:
+    name: external-secrets-system
+    app.kubernetes.io/name: external-secrets
+    app.kubernetes.io/component: secrets-operator

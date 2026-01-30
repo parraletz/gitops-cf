@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app
+  namespace: secrets-demo
+  labels:
+    app.kubernetes.io/name: demo-app
+    app.kubernetes.io/component: service
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: demo-app
+    app.kubernetes.io/component: application
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+    protocol: TCP
+---
+# Service para acceso externo (opcional)
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app-nodeport
+  namespace: secrets-demo
+  labels:
+    app.kubernetes.io/name: demo-app
+    app.kubernetes.io/component: external-service
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: demo-app
+    app.kubernetes.io/component: application
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+    protocol: TCP
+    nodePort: 30808

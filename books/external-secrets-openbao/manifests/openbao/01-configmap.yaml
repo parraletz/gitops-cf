@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openbao-config
+  namespace: openbao-system
+  labels:
+    app.kubernetes.io/name: openbao
+    app.kubernetes.io/component: config
+data:
+  vault.hcl: |
+    ui = true
+    
+    listener "tcp" {
+      address = "0.0.0.0:8200"
+      tls_disable = true
+    }
+    
+    storage "inmem" {}
+    
+    # Disable mlock for demo purposes (not recommended for production)
+    disable_mlock = true
+    
+    # API address
+    api_addr = "http://0.0.0.0:8200"
+    
+    # Cluster address (for HA, not used in this demo)
+    cluster_addr = "http://0.0.0.0:8201"
+    
+    # Default lease TTL
+    default_lease_ttl = "168h"
+    max_lease_ttl = "720h"
+    
+    # Log level
+    log_level = "INFO"

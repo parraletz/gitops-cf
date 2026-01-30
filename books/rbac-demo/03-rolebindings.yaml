@@ -1,0 +1,55 @@
+---
+# RoleBinding que conecta el ServiceAccount con el Role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods-binding
+  namespace: default
+  labels:
+    app: rbac-demo
+    purpose: demonstration
+subjects:
+- kind: ServiceAccount
+  name: pod-reader-sa
+  namespace: default
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# ClusterRoleBinding para el ejemplo con ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-read-pods-binding
+  labels:
+    app: rbac-demo
+    purpose: demonstration
+subjects:
+- kind: ServiceAccount
+  name: pod-reader-sa
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-pod-reader
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# Ejemplo de RoleBinding con usuario (para demostrar diferentes subjects)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: user-read-pods-binding
+  namespace: default
+  labels:
+    app: rbac-demo
+    purpose: demonstration
+subjects:
+- kind: User
+  name: demo-user
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io

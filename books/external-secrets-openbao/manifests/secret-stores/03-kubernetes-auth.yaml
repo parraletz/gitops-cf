@@ -1,0 +1,47 @@
+---
+# Configuración alternativa usando Kubernetes authentication method
+# Este es el método recomendado para producción
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: openbao-k8s-auth-store
+  namespace: secrets-demo
+  labels:
+    app.kubernetes.io/name: external-secrets
+    app.kubernetes.io/component: secret-store
+    app.kubernetes.io/auth-method: kubernetes
+spec:
+  provider:
+    vault:
+      server: "http://openbao.openbao-system.svc.cluster.local:8200"
+      path: "secret"
+      version: "v2"
+      auth:
+        kubernetes:
+          mountPath: "auth/kubernetes"
+          role: "demo-role"
+          serviceAccountRef:
+            name: "demo-app"
+            namespace: "secrets-demo"
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: openbao-k8s-cluster-store
+  labels:
+    app.kubernetes.io/name: external-secrets
+    app.kubernetes.io/component: cluster-secret-store
+    app.kubernetes.io/auth-method: kubernetes
+spec:
+  provider:
+    vault:
+      server: "http://openbao.openbao-system.svc.cluster.local:8200"
+      path: "secret"
+      version: "v2"
+      auth:
+        kubernetes:
+          mountPath: "auth/kubernetes"
+          role: "external-secrets-role"
+          serviceAccountRef:
+            name: "external-secrets"
+            namespace: "external-secrets-system"

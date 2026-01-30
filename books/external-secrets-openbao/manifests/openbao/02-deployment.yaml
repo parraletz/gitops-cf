@@ -1,0 +1,99 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openbao
+  namespace: openbao-system
+  labels:
+    app.kubernetes.io/name: openbao
+    app.kubernetes.io/component: server
+    app.kubernetes.io/version: "2.0.0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openbao
+      app.kubernetes.io/component: server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openbao
+        app.kubernetes.io/component: server
+    spec:
+      serviceAccountName: openbao
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        fsGroup: 1000
+      containers:
+      - name: openbao
+        image: quay.io/openbao/openbao:2.0.0
+        imagePullPolicy: IfNotPresent
+        command:
+        - "/bin/sh"
+        - "-c"
+        args:
+        - |
+          set -e
+          cp /vault/config/vault.hcl /tmp/vault.hcl
+          exec bao server -config=/tmp/vault.hcl
+        ports:
+        - name: http
+          containerPort: 8200
+          protocol: TCP
+        - name: internal
+          containerPort: 8201
+          protocol: TCP
+        env:
+        - name: BAO_ADDR
+          value: "http://127.0.0.1:8200"
+        - name: BAO_API_ADDR
+          value: "http://openbao.openbao-system.svc.cluster.local:8200"
+        - name: BAO_CLUSTER_ADDR
+          value: "http://openbao.openbao-system.svc.cluster.local:8201"
+        - name: BAO_LOG_LEVEL
+          value: "info"
+        - name: BAO_LOG_FORMAT
+          value: "standard"
+        volumeMounts:
+        - name: config
+          mountPath: /vault/config
+          readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /v1/sys/health?standbyok=true
+            port: 8200
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204
+            port: 8200
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 100
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: config
+        configMap:
+          name: openbao-config
+      restartPolicy: Always
